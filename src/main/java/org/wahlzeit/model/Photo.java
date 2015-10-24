@@ -20,6 +20,13 @@
 
 package org.wahlzeit.model;
 
+import java.util.Map;
+
+import org.wahlzeit.services.DataObject;
+import org.wahlzeit.services.EmailAddress;
+import org.wahlzeit.services.Language;
+import org.wahlzeit.services.ObjectManager;
+
 import com.google.api.client.util.ArrayMap;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
@@ -27,12 +34,6 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Parent;
-import org.wahlzeit.services.DataObject;
-import org.wahlzeit.services.EmailAddress;
-import org.wahlzeit.services.Language;
-import org.wahlzeit.services.ObjectManager;
-
-import java.util.Map;
 
 /**
  * A photo represents a user-provided (uploaded) photo.
@@ -68,64 +69,69 @@ public class Photo extends DataObject {
 	public static final int MAX_THUMB_PHOTO_HEIGHT = 150;
 
 	protected PhotoId id = null;
-	
+
 	/**
 	 *
 	 */
 	protected String ownerId;
-	
+
 	/**
-	 * Each photo can be viewed in different sizes (XS, S, M, L, XL)
-	 * Images are pre-computed in these sizes to optimize bandwidth when requested.
+	 * Each photo can be viewed in different sizes (XS, S, M, L, XL) Images are
+	 * pre-computed in these sizes to optimize bandwidth when requested.
 	 */
 	@Ignore
 	transient protected Map<PhotoSize, Image> images = new ArrayMap<PhotoSize, Image>();
-	
+
 	/**
 	 *
 	 */
 	protected boolean ownerNotifyAboutPraise = false;
 	protected EmailAddress ownerEmailAddress = EmailAddress.EMPTY;
 	protected Language ownerLanguage = Language.ENGLISH;
-	
+
 	/**
 	 *
 	 */
 	protected int width;
 	protected int height;
 	protected PhotoSize maxPhotoSize = PhotoSize.MEDIUM; // derived
-	
+
 	/**
 	 *
 	 */
 	protected Tags tags = Tags.EMPTY_TAGS;
-	
+
 	/**
 	 *
 	 */
 	protected PhotoStatus status = PhotoStatus.VISIBLE;
-	
+
 	/**
 	 *
 	 */
 	protected int praiseSum = 10;
 	protected int noVotes = 1;
 	protected int noVotesAtLastNotification = 1;
-	
+
 	/**
 	 *
 	 */
 	protected long creationTime = System.currentTimeMillis();
-	
+
 	/**
 	 * The default type is jpg
 	 */
 	protected String ending = "jpg";
-	
+
+	/**
+	 * location of the photo
+	 */
+	protected Coordinate location;
+
 	/**
 	 *
 	 */
-	//TODO: change it to a single long
+	// TODO: change it to a single long
 	@Id
 	Long idLong;
 	@Parent
@@ -202,7 +208,8 @@ public class Photo extends DataObject {
 	 * @methodtype get
 	 */
 	public String getCaption(ModelConfig cfg) {
-		String ownerName = UserManager.getInstance().getUserById(ownerId).getNickName();
+		String ownerName = UserManager.getInstance().getUserById(ownerId)
+				.getNickName();
 		return cfg.asPhotoCaption(ownerName);
 	}
 
@@ -276,7 +283,8 @@ public class Photo extends DataObject {
 	 * @methodtype get
 	 */
 	public int getThumbWidth() {
-		return isWiderThanHigher() ? MAX_THUMB_PHOTO_WIDTH : (width * MAX_THUMB_PHOTO_HEIGHT / height);
+		return isWiderThanHigher() ? MAX_THUMB_PHOTO_WIDTH : (width
+				* MAX_THUMB_PHOTO_HEIGHT / height);
 	}
 
 	/**
@@ -290,7 +298,8 @@ public class Photo extends DataObject {
 	 * @methodtype get
 	 */
 	public int getThumbHeight() {
-		return isWiderThanHigher() ? (height * MAX_THUMB_PHOTO_WIDTH / width) : MAX_THUMB_PHOTO_HEIGHT;
+		return isWiderThanHigher() ? (height * MAX_THUMB_PHOTO_WIDTH / width)
+				: MAX_THUMB_PHOTO_HEIGHT;
 	}
 
 	/**
@@ -395,7 +404,6 @@ public class Photo extends DataObject {
 		return creationTime;
 	}
 
-
 	public String getEnding() {
 		return ending;
 	}
@@ -417,5 +425,13 @@ public class Photo extends DataObject {
 	public void setNoNewPraise() {
 		noVotesAtLastNotification = noVotes;
 		incWriteCount();
+	}
+
+	public Coordinate getLocation() {
+		return location;
+	}
+
+	public void setLocation(Coordinate location) {
+		this.location = location;
 	}
 }
