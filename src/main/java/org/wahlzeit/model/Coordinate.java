@@ -7,9 +7,15 @@ public class Coordinate {
 	private double latitude;
 	private double longitude;
 
+	private static final int EARTH_RADIUS_IN_KM = 6371;
+
+	public Coordinate() {
+		this(0.0, 0.0);
+	}
+
 	public Coordinate(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+		setLatitude(latitude);
+		setLongitude(longitude);
 	}
 
 	public double getLatitude() {
@@ -17,7 +23,12 @@ public class Coordinate {
 	}
 
 	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+		if (latitude < -90 || latitude > 90) {
+			throw new IllegalArgumentException(
+					"Invalid latitude. Value must be between -90 and 90.");
+		} else {
+			this.latitude = latitude;
+		}
 	}
 
 	public double getLongitude() {
@@ -25,37 +36,50 @@ public class Coordinate {
 	}
 
 	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+		if (longitude < -180 || longitude > 180) {
+			throw new IllegalArgumentException(
+					"Invalid longitude. Value must be between -180 and 180.");
+		} else {
+			this.longitude = longitude;
+		}
 	}
 
 	public double getLatitudinalDistance(Coordinate secondCoordinate) {
-		double latitudinalDistance = 0.0;
-		latitudinalDistance = this.latitude - secondCoordinate.getLatitude();
+		double latitudinalDistance = this.latitude
+				- secondCoordinate.getLatitude();
 		latitudinalDistance = Math.abs(latitudinalDistance);
+		// check for shortest way
+		if (latitudinalDistance > 90) {
+			latitudinalDistance = 180 - latitudinalDistance;
+		}
 		return latitudinalDistance;
 	}
 
 	public double getLongitudinalDistance(Coordinate secondCoordinate) {
-		double longitudinalDistance = 0.0;
-		longitudinalDistance = this.longitude - secondCoordinate.getLongitude();
+		double longitudinalDistance = this.longitude
+				- secondCoordinate.getLongitude();
 		longitudinalDistance = Math.abs(longitudinalDistance);
+		// check for shortest way
+		if (longitudinalDistance > 180) {
+			longitudinalDistance = 360 - longitudinalDistance;
+		}
 		return longitudinalDistance;
 	}
 
-	public double getDistanceAsDouble(Coordinate secondCoordinate) {
-		double latitudinalDistance = getLatitudinalDistance(secondCoordinate);
-		double longitudinalDistance = getLongitudinalDistance(secondCoordinate);
-		double distance = Math.sqrt(Math.pow(latitudinalDistance, 2)
-				+ Math.pow(longitudinalDistance, 2));
-		distance = Math.abs(distance);
-		return distance;
-	}
+	public double getDistance(Coordinate secondCoordinate) {
+		double distance = 0.0;
+		double latFirstCoordinateAsRadiant = Math.toRadians(this.latitude);
+		double latSecondCoordinateAsRadiant = Math.toRadians(secondCoordinate
+				.getLatitude());
+		double longitudinalDistanceAsRadiant = Math
+				.toRadians(getLongitudinalDistance(secondCoordinate));
 
-	public Coordinate getDistance(Coordinate secondCoordinate) {
-		double latitudinalDistance = getLatitudinalDistance(secondCoordinate);
-		double longitudinalDistance = getLongitudinalDistance(secondCoordinate);
-		Coordinate distance = new Coordinate(latitudinalDistance,
-				longitudinalDistance);
+		distance = Math.sin(latFirstCoordinateAsRadiant)
+				* Math.sin(latSecondCoordinateAsRadiant)
+				+ Math.cos(latFirstCoordinateAsRadiant)
+				* Math.cos(latSecondCoordinateAsRadiant)
+				* Math.cos(longitudinalDistanceAsRadiant);
+		distance = EARTH_RADIUS_IN_KM * Math.acos(distance);
 		return distance;
 	}
 
