@@ -126,7 +126,7 @@ public class Photo extends DataObject {
 	/**
 	 * location of the photo
 	 */
-	protected Coordinate location;
+	protected Location location;
 
 	/**
 	 *
@@ -138,10 +138,11 @@ public class Photo extends DataObject {
 	Key parent = ObjectManager.applicationRootKey;
 
 	/**
-	 *
+	 * @methodtype constructor
 	 */
 	public Photo() {
 		id = PhotoId.getNextId();
+		location = new Location(0.0, 0.0);
 		incWriteCount();
 	}
 
@@ -150,7 +151,16 @@ public class Photo extends DataObject {
 	 */
 	public Photo(PhotoId myId) {
 		id = myId;
+		location = new Location(0.0, 0.0);
+		incWriteCount();
+	}
 
+	/**
+	 * @methodtype constructor
+	 */
+	public Photo(PhotoId myId, double latitude, double longitude) {
+		id = myId;
+		location = new Location(latitude, longitude);
 		incWriteCount();
 	}
 
@@ -427,11 +437,11 @@ public class Photo extends DataObject {
 		incWriteCount();
 	}
 
-	public Coordinate getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 
-	public void setLocation(Coordinate location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
 }

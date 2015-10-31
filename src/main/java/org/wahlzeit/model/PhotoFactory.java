@@ -27,16 +27,13 @@ import java.util.logging.Logger;
 /**
  * An Abstract Factory for creating photos and related objects.
  */
-public class PhotoFactory {
+public abstract class PhotoFactory {
 
-	private static final Logger log = Logger.getLogger(PhotoFactory.class.getName());
-	/**
-	 * Hidden singleton instance; needs to be initialized from the outside.
-	 */
-	private static PhotoFactory instance = null;
+	protected static final Logger log = Logger.getLogger(PhotoFactory.class
+			.getName());
 
 	/**
-	 *
+	 * @methodtype constructor
 	 */
 	protected PhotoFactory() {
 		// do nothing
@@ -50,68 +47,52 @@ public class PhotoFactory {
 	}
 
 	/**
-	 * Public singleton access method.
+	 * Public singleton access method. return BigCatsPhotoFactory instance
 	 */
 	public static synchronized PhotoFactory getInstance() {
-		if (instance == null) {
-			log.config(LogBuilder.createSystemMessage().addAction("setting generic PhotoFactory").toString());
-			setInstance(new PhotoFactory());
-		}
-
-		return instance;
-	}
-
-	/**
-	 * Method to set the singleton instance of PhotoFactory.
-	 */
-	protected static synchronized void setInstance(PhotoFactory photoFactory) {
-		if (instance != null) {
-			throw new IllegalStateException("attempt to initalize PhotoFactory twice");
-		}
-
-		instance = photoFactory;
+		return BigCatsPhotoFactory.getInstance();
 	}
 
 	/**
 	 * @methodtype factory
 	 */
-	public Photo createPhoto() {
-		return new Photo();
-	}
+	public abstract Photo createPhoto();
 
 	/**
 	 * Creates a new photo with the specified id
+	 * 
+	 * @methodtype factory
 	 */
-	public Photo createPhoto(PhotoId id) {
-		return new Photo(id);
-	}
+	public abstract Photo createPhoto(PhotoId id);
 
 	/**
-	 * Loads a photo. The Java object is loaded from the Google Datastore, the Images in all sizes are loaded from the
-	 * Google Cloud storage.
+	 * Loads a photo. The Java object is loaded from the Google Datastore, the
+	 * Images in all sizes are loaded from the Google Cloud storage.
 	 */
 	public Photo loadPhoto(PhotoId id) {
-	   /* Photo result =
-                OfyService.ofy().load().type(Photo.class).ancestor(KeyFactory.createKey("Application", "Wahlzeit")).filter(Photo.ID, id).first().now();
-        for (PhotoSize size : PhotoSize.values()) {
-            GcsFilename gcsFilename = new GcsFilename("picturebucket", filename);
-
-
-
-        }*/
+		/*
+		 * Photo result =
+		 * OfyService.ofy().load().type(Photo.class).ancestor(KeyFactory
+		 * .createKey("Application", "Wahlzeit")).filter(Photo.ID,
+		 * id).first().now(); for (PhotoSize size : PhotoSize.values()) {
+		 * GcsFilename gcsFilename = new GcsFilename("picturebucket", filename);
+		 * 
+		 * 
+		 * 
+		 * }
+		 */
 		return null;
 	}
 
-
 	/**
-	 *
+	 * @methodtype factory
 	 */
 	public PhotoFilter createPhotoFilter() {
 		return new PhotoFilter();
 	}
 
 	/**
-	 *
+	 * @methodtype factory
 	 */
 	public PhotoTagCollector createPhotoTagCollector() {
 		return new PhotoTagCollector();

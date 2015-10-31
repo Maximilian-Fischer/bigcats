@@ -8,20 +8,34 @@ public class Coordinate {
 	private double longitude;
 
 	private static final int EARTH_RADIUS_IN_KM = 6371;
+	static final double DEFAULT_LATITUDE = 0.0;
+	static final double DEFAULT_LONGITUDE = 0.0;
 
+	/**
+	 * @methodtype constructor
+	 */
 	public Coordinate() {
-		this(0.0, 0.0);
+		this(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
 	}
 
+	/**
+	 * @methodtype constructor
+	 */
 	public Coordinate(double latitude, double longitude) {
 		setLatitude(latitude);
 		setLongitude(longitude);
 	}
 
+	/**
+	 * @methodtype get
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 * @methodtype set
+	 */
 	public void setLatitude(double latitude) {
 		if (latitude < -90 || latitude > 90) {
 			throw new IllegalArgumentException(
@@ -31,10 +45,16 @@ public class Coordinate {
 		}
 	}
 
+	/**
+	 * @methodtype get
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * @methodtype set
+	 */
 	public void setLongitude(double longitude) {
 		if (longitude < -180 || longitude > 180) {
 			throw new IllegalArgumentException(
@@ -44,6 +64,15 @@ public class Coordinate {
 		}
 	}
 
+	/**
+	 * @param other
+	 *            the other Coordinate-Object
+	 * @return distance between the latitude-values of both coordinates as
+	 *         double-value
+	 * 
+	 * @methodtype query
+	 * 
+	 */
 	public double getLatitudinalDistance(Coordinate secondCoordinate) {
 		double latitudinalDistance = this.latitude
 				- secondCoordinate.getLatitude();
@@ -55,6 +84,15 @@ public class Coordinate {
 		return latitudinalDistance;
 	}
 
+	/**
+	 * @param other
+	 *            the other Coordinate-Object
+	 * @return distance between the longitude-values of both coordinates as
+	 *         double-value
+	 * 
+	 * @methodtype query
+	 * 
+	 */
 	public double getLongitudinalDistance(Coordinate secondCoordinate) {
 		double longitudinalDistance = this.longitude
 				- secondCoordinate.getLongitude();
@@ -66,6 +104,19 @@ public class Coordinate {
 		return longitudinalDistance;
 	}
 
+	/**
+	 * Calculates the distance of two coordinates great-circle distance formula,
+	 * see {@link https://en.wikipedia.org/wiki/Great-circle_distance} for
+	 * details
+	 * 
+	 * @param other
+	 *            the other Coordinate-Object
+	 * @return The calculated distance between the coordinates as a
+	 *         double-value.
+	 * 
+	 * @methodtype query
+	 * 
+	 */
 	public double getDistance(Coordinate secondCoordinate) {
 		double distance = 0.0;
 		double latFirstCoordinateAsRadiant = Math.toRadians(this.latitude);
