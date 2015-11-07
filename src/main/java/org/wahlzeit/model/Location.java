@@ -3,28 +3,47 @@ package org.wahlzeit.model;
 public class Location {
 
 	private String name;
-	private Coordinate coordinate;
+	private SphericCoordinate coordinate;
 
 	/**
 	 * @methodtype constructor
 	 */
 	public Location() {
-		this(Coordinate.DEFAULT_LATITUDE, Coordinate.DEFAULT_LONGITUDE);
+		this(new SphericCoordinate(SphericCoordinate.DEFAULT_LATITUDE,
+				SphericCoordinate.DEFAULT_LONGITUDE));
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public Location(double latitude, double longitude) {
-		this(latitude, longitude, "");
+	public Location(SphericCoordinate coordinate) {
+		this(coordinate, "");
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public Location(double latitude, double longitude, String name) {
-		this.coordinate = new Coordinate(latitude, longitude);
+	public Location(SphericCoordinate coordinate, String name) {
+		assertIsValidCoordinate(coordinate);
+		assertIsValidName(name);
+		this.coordinate = coordinate;
 		this.name = name;
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidCoordinate(SphericCoordinate coordinate) {
+		if (coordinate == null)
+			throw new IllegalArgumentException("coordinate should not be null");
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidName(String name) {
+		if (name == null)
+			throw new IllegalArgumentException("name should not be null");
 	}
 
 	/**
@@ -44,14 +63,14 @@ public class Location {
 	/**
 	 * @methodtype get
 	 */
-	public Coordinate getCoordinate() {
+	public SphericCoordinate getCoordinate() {
 		return coordinate;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setCoordinate(Coordinate coordinate) {
+	public void setCoordinate(SphericCoordinate coordinate) {
 		this.coordinate = coordinate;
 	}
 

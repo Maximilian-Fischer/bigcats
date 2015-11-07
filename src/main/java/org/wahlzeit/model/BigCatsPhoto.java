@@ -1,5 +1,8 @@
 package org.wahlzeit.model;
 
+import com.googlecode.objectify.annotation.Subclass;
+
+@Subclass
 public class BigCatsPhoto extends Photo {
 
 	private static final long serialVersionUID = 6761837684553577495L;
@@ -32,13 +35,12 @@ public class BigCatsPhoto extends Photo {
 		this.species = species;
 	}
 
-	public BigCatsPhoto(PhotoId id, double latitude, double longitude) {
-		super(id, latitude, longitude);
+	public BigCatsPhoto(PhotoId id, Location location) {
+		super(id, location);
 	}
 
-	public BigCatsPhoto(PhotoId id, double latitude, double longitude,
-			String species) {
-		super(id, latitude, longitude);
+	public BigCatsPhoto(PhotoId id, Location location, String species) {
+		super(id, location);
 		this.species = species;
 	}
 

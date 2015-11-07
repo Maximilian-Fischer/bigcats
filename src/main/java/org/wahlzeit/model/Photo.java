@@ -142,7 +142,7 @@ public class Photo extends DataObject {
 	 */
 	public Photo() {
 		id = PhotoId.getNextId();
-		location = new Location(0.0, 0.0);
+		location = new Location();
 		incWriteCount();
 	}
 
@@ -151,17 +151,26 @@ public class Photo extends DataObject {
 	 */
 	public Photo(PhotoId myId) {
 		id = myId;
-		location = new Location(0.0, 0.0);
+		location = new Location();
 		incWriteCount();
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public Photo(PhotoId myId, double latitude, double longitude) {
+	public Photo(PhotoId myId, Location location) {
+		assertIsLocationValid(location);
 		id = myId;
-		location = new Location(latitude, longitude);
+		this.location = location;
 		incWriteCount();
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsLocationValid(Location location) {
+		if (location == null)
+			throw new IllegalArgumentException("location can not be null");
 	}
 
 	/**
@@ -443,5 +452,6 @@ public class Photo extends DataObject {
 
 	public void setLocation(Location location) {
 		this.location = location;
+		incWriteCount();
 	}
 }

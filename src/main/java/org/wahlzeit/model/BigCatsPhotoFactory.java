@@ -60,11 +60,4 @@ public class BigCatsPhotoFactory extends PhotoFactory {
 		return new BigCatsPhoto(id);
 	}
 
-	/**
-	 * @methodtype factory
-	 */
-	public Photo createPhoto(PhotoId id, double latitude, double longitude) {
-		return new BigCatsPhoto(id, latitude, longitude);
-	}
-
 }
