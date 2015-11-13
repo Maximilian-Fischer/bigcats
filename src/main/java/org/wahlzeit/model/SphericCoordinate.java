@@ -2,7 +2,7 @@ package org.wahlzeit.model;
 
 import com.google.appengine.repackaged.com.google.common.base.Objects;
 
-public class SphericCoordinate implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
 
 	private double latitude;
 	private double longitude;
@@ -133,81 +133,21 @@ public class SphericCoordinate implements Coordinate {
 	}
 
 	/**
-	 * Calculates the distance of two coordinates great-circle distance formula,
-	 * see {@link https ://en.wikipedia.org/wiki/Great-circle_distance} for
-	 * details converts
-	 * 
-	 * @param otherCoordinate
-	 *            the other Coordinate-Object, gets converted into spheric
-	 *            coordinate object
-	 * @return The calculated distance between the coordinates as a
-	 *         double-value.
-	 * 
-	 * @methodtype query
-	 * 
-	 */
-	@Override
-	public double getDistance(Coordinate otherCoordinate) {
-
-		SphericCoordinate otherCoordinateSpheric = asSphericCoordinate(otherCoordinate);
-		double distance = 0.0;
-		double latFirstCoordinateAsRadiant = Math.toRadians(this.latitude);
-		double latSecondCoordinateAsRadiant = Math
-				.toRadians(otherCoordinateSpheric.getLatitude());
-		double longitudinalDistanceAsRadiant = Math
-				.toRadians(getLongitudinalDistance(otherCoordinateSpheric));
-
-		distance = Math.sin(latFirstCoordinateAsRadiant)
-				* Math.sin(latSecondCoordinateAsRadiant)
-				+ Math.cos(latFirstCoordinateAsRadiant)
-				* Math.cos(latSecondCoordinateAsRadiant)
-				* Math.cos(longitudinalDistanceAsRadiant);
-		distance = this.radius * Math.acos(distance);
-		return distance;
-	}
-
-	/**
 	 * @methodtype conversion
 	 */
-	private SphericCoordinate asSphericCoordinate(Coordinate coordinate) {
-		if (coordinate instanceof SphericCoordinate) {
-			return (SphericCoordinate) coordinate;
-		} else if (coordinate instanceof CartesianCoordinate) {
-			return doConversionToSphericCoordinate((CartesianCoordinate) coordinate);
-		} else {
-			throw new IllegalArgumentException("Unknown coordinate type");
-		}
-	}
-
-	/**
-	 * @methodtype conversion
-	 */
-	private SphericCoordinate doConversionToSphericCoordinate(
-			CartesianCoordinate coordinate) {
-		double x = coordinate.getX();
-		double y = coordinate.getY();
-		double z = coordinate.getZ();
-
-		double r = Math.sqrt(x * x + y * y + z * z);
-		double latitude = Math.toDegrees(Math.acos(z / r));
-		double longitude = Math.toDegrees(Math.atan2(y, x));
-
-		return new SphericCoordinate(latitude, longitude, r);
-	}
-
-	/**
-	 * @methodtype booleanQuery
-	 */
 	@Override
-	public boolean isEqual(Coordinate otherCoordinate) {
-		SphericCoordinate otherCoordinateSpheric = asSphericCoordinate(otherCoordinate);
-		boolean isLatitudeEqual = isDoubleEqual(latitude,
-				otherCoordinateSpheric.getLatitude());
-		boolean isLongitudeEqual = isDoubleEqual(longitude,
-				otherCoordinateSpheric.getLongitude());
-		boolean isRadiusEqual = isDoubleEqual(radius,
-				otherCoordinateSpheric.getRadius());
-		return isLatitudeEqual && isLongitudeEqual && isRadiusEqual;
+	protected CartesianCoordinate asCartesianCoordinate() {
+
+		double latitudeAsRadiant = Math.toRadians(this.latitude);
+		double longitudeAsRadiant = Math.toRadians(this.longitude);
+
+		double x = this.radius * Math.cos(longitudeAsRadiant)
+				* Math.sin(latitudeAsRadiant);
+		double y = this.radius * Math.sin(longitudeAsRadiant)
+				* Math.sin(latitudeAsRadiant);
+		double z = this.radius * Math.cos(latitudeAsRadiant);
+
+		return new CartesianCoordinate(x, y, z);
 	}
 
 	@Override
@@ -227,13 +167,6 @@ public class SphericCoordinate implements Coordinate {
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * @methodtype comparison
-	 */
-	public boolean isDoubleEqual(double value, double valueToCompare) {
-		return (Math.abs(value - valueToCompare) < 0.000001);
 	}
 
 }

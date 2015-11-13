@@ -13,8 +13,7 @@ public class CartesianCoordinateTest {
 	private SphericCoordinate sphericLosAngeles;
 	private SphericCoordinate sphericErlangen;
 
-	// other distance than spheric --> no curvature of the earth
-	private static final double cartesianDistanceErlangenToLosAngelesInKm = 7712.928747957382;
+	private static final double distanceErlangenToLosAngelesInKm = 7712.928747957382;
 	private static final double DELTA = 0.000001;
 
 	@Before
@@ -51,9 +50,9 @@ public class CartesianCoordinateTest {
 				.getDistance(cartesianLosAngeles);
 		double distanceLosAngelesToErlangen = cartesianLosAngeles
 				.getDistance(cartesianErlangen);
-		assertEquals(cartesianDistanceErlangenToLosAngelesInKm,
+		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceErlangenToLosAngeles, DELTA);
-		assertEquals(cartesianDistanceErlangenToLosAngelesInKm,
+		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceLosAngelesToErlangen, DELTA);
 	}
 
@@ -73,9 +72,9 @@ public class CartesianCoordinateTest {
 				.getDistance(sphericLosAngeles);
 		double distanceLosAngelesCartesianToErlangenSpheric = cartesianLosAngeles
 				.getDistance(sphericErlangen);
-		assertEquals(cartesianDistanceErlangenToLosAngelesInKm,
+		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceErlangenCartesianToLosAngelesSpheric, DELTA);
-		assertEquals(cartesianDistanceErlangenToLosAngelesInKm,
+		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceLosAngelesCartesianToErlangenSpheric, DELTA);
 	}
 

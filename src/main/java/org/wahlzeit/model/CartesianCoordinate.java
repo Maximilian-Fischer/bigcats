@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class CartesianCoordinate implements Coordinate {
+public class CartesianCoordinate extends AbstractCoordinate {
 
 	private double x;
 	private double y;
@@ -23,68 +23,10 @@ public class CartesianCoordinate implements Coordinate {
 	}
 
 	/**
-	 * @param otherCoordinate
-	 *            the other Coordinate-Object, gets converted into cartesian
-	 *            coordinate object
-	 * @return The calculated distance between the coordinates as a
-	 *         double-value.
-	 * 
-	 * @methodtype query
-	 * 
-	 */
-	@Override
-	public double getDistance(Coordinate otherCoordinate) {
-		CartesianCoordinate otherCoordinateCartesian = asCartesianCoordinate(otherCoordinate);
-		double deltaX = this.x - otherCoordinateCartesian.getX();
-		double deltaY = this.y - otherCoordinateCartesian.getY();
-		double deltaZ = this.z - otherCoordinateCartesian.getZ();
-
-		return Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-	}
-
-	/**
-	 * @methodtype booleanQuery
-	 */
-	@Override
-	public boolean isEqual(Coordinate otherCoordinate) {
-		CartesianCoordinate otherCoordinateCartesian = asCartesianCoordinate(otherCoordinate);
-		boolean isXEqual = isDoubleEqual(this.x,
-				otherCoordinateCartesian.getX());
-		boolean isYEqual = isDoubleEqual(this.y,
-				otherCoordinateCartesian.getY());
-		boolean isZEqual = isDoubleEqual(this.z,
-				otherCoordinateCartesian.getZ());
-		return isXEqual && isYEqual && isZEqual;
-	}
-
-	/**
 	 * @methodtype conversion
 	 */
-	private CartesianCoordinate asCartesianCoordinate(Coordinate coordinate) {
-		if (coordinate instanceof CartesianCoordinate) {
-			return (CartesianCoordinate) coordinate;
-		} else if (coordinate instanceof SphericCoordinate) {
-			return doConversionToCartesianCoordinate((SphericCoordinate) coordinate);
-		} else {
-			throw new IllegalArgumentException("Unknown coordinate type");
-		}
-	}
-
-	/**
-	 * @methodtype conversion
-	 */
-	private CartesianCoordinate doConversionToCartesianCoordinate(
-			SphericCoordinate coordinate) {
-
-		double latitude = Math.toRadians(coordinate.getLatitude());
-		double longitude = Math.toRadians(coordinate.getLongitude());
-		double radius = coordinate.getRadius();
-
-		double x = radius * Math.cos(longitude) * Math.sin(latitude);
-		double y = radius * Math.sin(longitude) * Math.sin(latitude);
-		double z = radius * Math.cos(latitude);
-
-		return new CartesianCoordinate(x, y, z);
+	protected CartesianCoordinate asCartesianCoordinate() {
+		return this;
 	}
 
 	@Override
@@ -160,12 +102,4 @@ public class CartesianCoordinate implements Coordinate {
 	public void setZ(double z) {
 		this.z = z;
 	}
-
-	/**
-	 * @methodtype comparison
-	 */
-	public boolean isDoubleEqual(double value, double valueToCompare) {
-		return (Math.abs(value - valueToCompare) < 0.000001);
-	}
-
 }

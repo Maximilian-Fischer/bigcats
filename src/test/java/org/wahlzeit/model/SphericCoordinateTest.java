@@ -15,8 +15,13 @@ public class SphericCoordinateTest {
 	private CartesianCoordinate cartesianErlangen;
 	private CartesianCoordinate cartesianLosAngeles;
 
-	private static final double distanceErlangenToLosAngelesInKm = 9454.686943807534;
-	private static final double shortestDistanceOfDummyCoordinates = 17258.39021528912;
+	// private static final double
+	// distanceErlangenToLosAngelesInKmOnEarthSurface =
+	// 9454.686943807534;
+	// private static final double distanceOfDummyCoordinatesOnEarthSurface =
+	// 17258.39021528912;
+	private static final double distanceErlangenToLosAngelesInKm = 7712.928747957382;
+	private static final double distanceBetweenDummyCoordinatesInKm = 12333.75146622485;
 	private static final double DELTA = 0.000001;
 
 	@Before
@@ -129,7 +134,7 @@ public class SphericCoordinateTest {
 				distanceErlangenToLosAngeles, DELTA);
 		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceLosAngelesToErlangen, DELTA);
-		assertEquals(shortestDistanceOfDummyCoordinates,
+		assertEquals(distanceBetweenDummyCoordinatesInKm,
 				shortestDistanceFirstDummyToSecondDummy, DELTA);
 
 	}
