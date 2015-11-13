@@ -1,9 +1,12 @@
 package org.wahlzeit.model;
 
+import com.googlecode.objectify.annotation.Container;
+
 public class Location {
 
 	private String name;
-	private SphericCoordinate coordinate;
+	@Container
+	private Coordinate coordinate;
 
 	/**
 	 * @methodtype constructor
@@ -16,14 +19,14 @@ public class Location {
 	/**
 	 * @methodtype constructor
 	 */
-	public Location(SphericCoordinate coordinate) {
+	public Location(Coordinate coordinate) {
 		this(coordinate, "");
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public Location(SphericCoordinate coordinate, String name) {
+	public Location(Coordinate coordinate, String name) {
 		assertIsValidCoordinate(coordinate);
 		assertIsValidName(name);
 		this.coordinate = coordinate;
@@ -33,7 +36,7 @@ public class Location {
 	/**
 	 * @methodtype assertion
 	 */
-	private void assertIsValidCoordinate(SphericCoordinate coordinate) {
+	private void assertIsValidCoordinate(Coordinate coordinate) {
 		if (coordinate == null)
 			throw new IllegalArgumentException("coordinate should not be null");
 	}
@@ -63,14 +66,14 @@ public class Location {
 	/**
 	 * @methodtype get
 	 */
-	public SphericCoordinate getCoordinate() {
+	public Coordinate getCoordinate() {
 		return coordinate;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setCoordinate(SphericCoordinate coordinate) {
+	public void setCoordinate(Coordinate coordinate) {
 		this.coordinate = coordinate;
 	}
 
