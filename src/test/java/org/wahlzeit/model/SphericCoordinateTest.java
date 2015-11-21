@@ -119,7 +119,18 @@ public class SphericCoordinateTest {
 		double shortestLongitudinalDistance = firstShortestDistanceCoordinate
 				.getLongitudinalDistance(secondShortestDistanceCoordinate);
 		assertEquals(15.0, shortestLongitudinalDistance, DELTA);
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testLatitudinalDistanceWithNull() {
+		double latitudinalDistanceElangenSphericToNull = sphericErlangen
+				.getLatitudinalDistance(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLongitudinalDistanceWithNull() {
+		double longitudinalDistanceElangenSphericToNull = sphericErlangen
+				.getLongitudinalDistance(null);
 	}
 
 	@Test
@@ -140,7 +151,7 @@ public class SphericCoordinateTest {
 	}
 
 	@Test
-	public void testSphericConversion() {
+	public void testDistanceWithConversionOfSameLocation() {
 		double distanceElangenSphericToErlangenCartesian = sphericErlangen
 				.getDistance(cartesianErlangen);
 		double distanceErlangenCartesianToErlangenSpheric = cartesianErlangen
@@ -150,7 +161,7 @@ public class SphericCoordinateTest {
 	}
 
 	@Test
-	public void testDistanceWithConversionToSpheric() {
+	public void testDistanceWithConversionOfDifferendLocation() {
 		double distanceErlangenSphericToLosAngelesCartesian = sphericErlangen
 				.getDistance(cartesianLosAngeles);
 		double distanceLosAngelesSphericToErlangenCartesian = sphericLosAngeles
@@ -159,6 +170,18 @@ public class SphericCoordinateTest {
 				distanceErlangenSphericToLosAngelesCartesian, DELTA);
 		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceLosAngelesSphericToErlangenCartesian, DELTA);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDistanceOfSphericWithNullAsParameter() {
+		double distanceElangenSphericToErlangenCartesian = sphericErlangen
+				.getDistance(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDistanceOfCartesianWithNullAsParameter() {
+		double distanceErlangenCartesianToErlangenSpheric = cartesianErlangen
+				.getDistance(null);
 	}
 
 }

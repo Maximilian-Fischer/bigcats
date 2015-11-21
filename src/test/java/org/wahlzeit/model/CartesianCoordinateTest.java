@@ -30,18 +30,18 @@ public class CartesianCoordinateTest {
 	@Test
 	public void testDefaultConstructor() {
 		CartesianCoordinate coordinate = new CartesianCoordinate();
-		assertEquals(0.0, coordinate.getX(), DELTA);
-		assertEquals(0.0, coordinate.getY(), DELTA);
-		assertEquals(0.0, coordinate.getZ(), DELTA);
+		assertEquals(0.0, coordinate.getCartesianX(), DELTA);
+		assertEquals(0.0, coordinate.getCartesianY(), DELTA);
+		assertEquals(0.0, coordinate.getCartesianZ(), DELTA);
 	}
 
 	@Test
 	public void testXYZConstructor() {
 		CartesianCoordinate coordinate = new CartesianCoordinate(7000.0, 250.0,
 				3.7);
-		assertEquals(7000.0, coordinate.getX(), DELTA);
-		assertEquals(250.0, coordinate.getY(), DELTA);
-		assertEquals(3.7, coordinate.getZ(), DELTA);
+		assertEquals(7000.0, coordinate.getCartesianX(), DELTA);
+		assertEquals(250.0, coordinate.getCartesianY(), DELTA);
+		assertEquals(3.7, coordinate.getCartesianZ(), DELTA);
 	}
 
 	@Test
@@ -76,6 +76,26 @@ public class CartesianCoordinateTest {
 				distanceErlangenCartesianToLosAngelesSpheric, DELTA);
 		assertEquals(distanceErlangenToLosAngelesInKm,
 				distanceLosAngelesCartesianToErlangenSpheric, DELTA);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetXWithNaN() {
+		cartesianErlangen.setX(Double.NaN);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetYWithNaN() {
+		cartesianErlangen.setX(Double.NaN);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetZWithNaN() {
+		cartesianErlangen.setX(Double.NaN);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetDistanceWithNullAsParameter() {
+		cartesianErlangen.getDistance(null);
 	}
 
 }

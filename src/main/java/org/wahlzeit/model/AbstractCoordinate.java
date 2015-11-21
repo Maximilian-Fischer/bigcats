@@ -10,18 +10,20 @@ public abstract class AbstractCoordinate implements Coordinate {
 	 */
 	@Override
 	public double getDistance(Coordinate otherCoordinate) {
+		// preconditions
 		assertNotNull(otherCoordinate);
-		CartesianCoordinate thisCoordinateCartesian = this
-				.asCartesianCoordinate();
-		CartesianCoordinate otherCoordinateCartesian = ((AbstractCoordinate) otherCoordinate)
-				.asCartesianCoordinate();
-		double deltaX = thisCoordinateCartesian.getX()
-				- otherCoordinateCartesian.getX();
-		double deltaY = thisCoordinateCartesian.getY()
-				- otherCoordinateCartesian.getY();
-		double deltaZ = thisCoordinateCartesian.getZ()
-				- otherCoordinateCartesian.getZ();
-		return Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+		double deltaX = getCartesianX() - otherCoordinate.getCartesianX();
+		double deltaY = getCartesianY() - otherCoordinate.getCartesianY();
+		double deltaZ = getCartesianZ() - otherCoordinate.getCartesianZ();
+		double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ
+				* deltaZ);
+
+		// postconditions
+		assertIsValidDistance(distance);
+		assertClassInvariants();
+
+		return distance;
 	}
 
 	/**
@@ -29,33 +31,50 @@ public abstract class AbstractCoordinate implements Coordinate {
 	 */
 	@Override
 	public boolean isEqual(Coordinate otherCoordinate) {
+		// preconditions
 		assertNotNull(otherCoordinate);
-		CartesianCoordinate thisCoordinateCartesian = this
-				.asCartesianCoordinate();
-		CartesianCoordinate otherCoordinateCartesian = ((AbstractCoordinate) otherCoordinate)
-				.asCartesianCoordinate();
-		boolean isXEqual = isDoubleEqual(thisCoordinateCartesian.getX(),
-				otherCoordinateCartesian.getX());
-		boolean isYEqual = isDoubleEqual(thisCoordinateCartesian.getY(),
-				otherCoordinateCartesian.getY());
-		boolean isZEqual = isDoubleEqual(thisCoordinateCartesian.getZ(),
-				otherCoordinateCartesian.getZ());
-		return isXEqual && isYEqual && isZEqual;
-	}
 
-	/**
-	 * @methodtype convertion
-	 */
-	protected abstract CartesianCoordinate asCartesianCoordinate();
+		boolean isXEqual = isDoubleEqual(getCartesianX(),
+				otherCoordinate.getCartesianX());
+		boolean isYEqual = isDoubleEqual(getCartesianY(),
+				otherCoordinate.getCartesianY());
+		boolean isZEqual = isDoubleEqual(getCartesianZ(),
+				otherCoordinate.getCartesianZ());
+		boolean isEverythingEqual = isXEqual && isYEqual && isZEqual;
+
+		// postconditions
+		assertClassInvariants();
+
+		return isEverythingEqual;
+	}
 
 	/**
 	 * @methodtype assertion
 	 */
-	private void assertNotNull(Coordinate otherCoordinate) {
+	protected void assertNotNull(Coordinate otherCoordinate) {
 		if (otherCoordinate == null) {
 			throw new IllegalArgumentException(
 					"other Coordinate can not be null");
 		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	protected void assertIsValidDistance(double distance) {
+		if (distance < 0)
+			throw new IllegalArgumentException(
+					"distance needs to be greater or equal zero");
+		if (Double.isNaN(distance))
+			throw new IllegalArgumentException("distance needs to be a number");
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	protected void assertClassInvariants() {
+		// AbstractCoordinate does not have a state --> no invariant checks
+		// needed
 	}
 
 	/**

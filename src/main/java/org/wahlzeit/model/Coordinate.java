@@ -2,8 +2,28 @@ package org.wahlzeit.model;
 
 public interface Coordinate {
 
-	public double getDistance(Coordinate otherCoordinate);
+	/**
+	 * @methodtype query
+	 */
+	double getDistance(Coordinate otherCoordinate);
 
-	public boolean isEqual(Coordinate otherCoordinate);
+	/**
+	 * @methodtype comparison
+	 */
+	boolean isEqual(Coordinate otherCoordinate);
 
+	/**
+	 * @methodtype query
+	 */
+	double getCartesianX();
+
+	/**
+	 * @methodtype query
+	 */
+	double getCartesianY();
+
+	/**
+	 * @methodtype query
+	 */
+	double getCartesianZ();
 }

@@ -31,9 +31,17 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 */
 	public SphericCoordinate(double latitude, double longitude,
 			double radiusInKm) {
+		// preconditions
+		assertIsValidLatitude(latitude);
+		assertIsValidLongitude(longitude);
+		assertIsValidRadius(radiusInKm);
+
 		setLatitude(latitude);
 		setLongitude(longitude);
 		setRadius(radiusInKm);
+
+		// postconditions
+		assertClassInvariants();
 	}
 
 	/**
@@ -47,12 +55,14 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setLatitude(double latitude) {
-		if (latitude < -90 || latitude > 90) {
-			throw new IllegalArgumentException(
-					"Invalid latitude. Value must be between -90 and 90.");
-		} else {
-			this.latitude = latitude;
-		}
+
+		// precondition
+		assertIsValidLatitude(latitude);
+
+		this.latitude = latitude;
+
+		// postconditions
+		assertClassInvariants();
 	}
 
 	/**
@@ -66,12 +76,13 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setLongitude(double longitude) {
-		if (longitude < -180 || longitude > 180) {
-			throw new IllegalArgumentException(
-					"Invalid longitude. Value must be between -180 and 180.");
-		} else {
-			this.longitude = longitude;
-		}
+		// precondition
+		assertIsValidLongitude(longitude);
+
+		this.longitude = longitude;
+
+		// postcondition
+		assertClassInvariants();
 	}
 
 	/**
@@ -85,11 +96,15 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setRadius(double radiusInKm) {
-		if (radiusInKm < 0) {
-			throw new IllegalArgumentException("Radius must be greater than 0");
-		} else {
-			this.radius = radiusInKm;
-		}
+
+		// precondition
+		assertIsValidRadius(radiusInKm);
+
+		this.radius = radiusInKm;
+
+		// postcondition
+		assertClassInvariants();
+
 	}
 
 	/**
@@ -102,6 +117,9 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * 
 	 */
 	public double getLatitudinalDistance(SphericCoordinate secondCoordinate) {
+		// preconditions
+		assertNotNull(secondCoordinate);
+
 		double latitudinalDistance = this.latitude
 				- secondCoordinate.getLatitude();
 		latitudinalDistance = Math.abs(latitudinalDistance);
@@ -109,6 +127,10 @@ public class SphericCoordinate extends AbstractCoordinate {
 		if (latitudinalDistance > 90) {
 			latitudinalDistance = 180 - latitudinalDistance;
 		}
+
+		// postconditions
+		assertIsValidDistance(latitudinalDistance);
+
 		return latitudinalDistance;
 	}
 
@@ -122,6 +144,9 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * 
 	 */
 	public double getLongitudinalDistance(SphericCoordinate secondCoordinate) {
+		// preconditions
+		assertNotNull(secondCoordinate);
+
 		double longitudinalDistance = this.longitude
 				- secondCoordinate.getLongitude();
 		longitudinalDistance = Math.abs(longitudinalDistance);
@@ -129,25 +154,85 @@ public class SphericCoordinate extends AbstractCoordinate {
 		if (longitudinalDistance > 180) {
 			longitudinalDistance = 360 - longitudinalDistance;
 		}
+
+		// postconditions
+		assertIsValidDistance(longitudinalDistance);
+
 		return longitudinalDistance;
 	}
 
 	/**
-	 * @methodtype conversion
+	 * @methodtype query
 	 */
 	@Override
-	protected CartesianCoordinate asCartesianCoordinate() {
+	public double getCartesianX() {
+		return radius * Math.cos(Math.toRadians(longitude))
+				* Math.sin(Math.toRadians(latitude));
+	}
 
-		double latitudeAsRadiant = Math.toRadians(this.latitude);
-		double longitudeAsRadiant = Math.toRadians(this.longitude);
+	/**
+	 * @methodtype query
+	 */
+	@Override
+	public double getCartesianY() {
+		return radius * Math.sin(Math.toRadians(longitude))
+				* Math.sin(Math.toRadians(latitude));
+	}
 
-		double x = this.radius * Math.cos(longitudeAsRadiant)
-				* Math.sin(latitudeAsRadiant);
-		double y = this.radius * Math.sin(longitudeAsRadiant)
-				* Math.sin(latitudeAsRadiant);
-		double z = this.radius * Math.cos(latitudeAsRadiant);
+	/**
+	 * @methodtype query
+	 */
+	@Override
+	public double getCartesianZ() {
+		return radius * Math.cos(Math.toRadians(latitude));
+	}
 
-		return new CartesianCoordinate(x, y, z);
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidLatitude(double latitudeValue) {
+		if (latitude < -90 || latitude > 90) {
+			throw new IllegalArgumentException(
+					"Invalid latitude. Value must be between -90 and 90.");
+		}
+		if (Double.isNaN(latitudeValue)) {
+			throw new IllegalArgumentException("latitude must be an number");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidLongitude(double longitudeValue) {
+		if (longitude < -180 || longitude > 180) {
+			throw new IllegalArgumentException(
+					"Invalid longitude. Value must be between -180 and 180.");
+		}
+		if (Double.isNaN(longitudeValue)) {
+			throw new IllegalArgumentException("longitude must be an number");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidRadius(double radiusValueInKm) {
+		if (radiusValueInKm < 0) {
+			throw new IllegalArgumentException("Radius must be greater than 0");
+		}
+		if (Double.isNaN(radiusValueInKm)) {
+			throw new IllegalArgumentException("radius must be a numer");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	protected void assertClassInvariants() {
+		super.assertClassInvariants();
+		assertIsValidLatitude(this.latitude);
+		assertIsValidLongitude(this.longitude);
+		assertIsValidRadius(this.radius);
 	}
 
 	@Override

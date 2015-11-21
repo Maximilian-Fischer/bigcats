@@ -17,16 +17,17 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype constructor
 	 */
 	public CartesianCoordinate(double x, double y, double z) {
+		// preconditions
+		assertIsValidX(x);
+		assertIsValidY(y);
+		assertIsValidZ(z);
+
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
 
-	/**
-	 * @methodtype conversion
-	 */
-	protected CartesianCoordinate asCartesianCoordinate() {
-		return this;
+		// postconditions
+		assertClassInvariants();
 	}
 
 	@Override
@@ -64,42 +65,100 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype get
 	 */
-	public double getX() {
+	@Override
+	public double getCartesianX() {
 		return x;
 	}
 
 	/**
-	 * @methodtype set
-	 */
-	public void setX(double x) {
-		this.x = x;
-	}
-
-	/**
 	 * @methodtype get
 	 */
-	public double getY() {
+	@Override
+	public double getCartesianY() {
 		return y;
 	}
 
 	/**
-	 * @methodtype set
-	 */
-	public void setY(double y) {
-		this.y = y;
-	}
-
-	/**
 	 * @methodtype get
 	 */
-	public double getZ() {
+	@Override
+	public double getCartesianZ() {
 		return z;
 	}
 
 	/**
 	 * @methodtype set
 	 */
+	public void setX(double x) {
+		// preconditions
+		assertIsValidX(x);
+
+		this.x = x;
+
+		// postconditions
+		assertClassInvariants();
+	}
+
+	/**
+	 * @methodtype set
+	 */
+	public void setY(double y) {
+		// preconditions
+		assertIsValidX(y);
+
+		this.y = y;
+
+		// postconditions
+		assertClassInvariants();
+	}
+
+	/**
+	 * @methodtype set
+	 */
 	public void setZ(double z) {
+		// preconditions
+		assertIsValidX(z);
+
 		this.z = z;
+
+		// postconditions
+		assertClassInvariants();
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidX(double xValue) {
+		if (Double.isNaN(xValue)) {
+			throw new IllegalArgumentException("x-coordinate must be a number");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidY(double yValue) {
+		if (Double.isNaN(yValue)) {
+			throw new IllegalArgumentException("y-coordinate must be a numer");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	private void assertIsValidZ(double zValue) {
+		if (Double.isNaN(zValue)) {
+			throw new IllegalArgumentException("z-coordinate must be a numer");
+		}
+	}
+
+	/**
+	 * @methodtype assertion
+	 */
+	protected void assertClassInvariants() {
+		super.assertClassInvariants();
+		assertIsValidX(this.x);
+		assertIsValidY(this.y);
+		assertIsValidZ(this.z);
 	}
 }
