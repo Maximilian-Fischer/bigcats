@@ -1,7 +1,9 @@
 package org.wahlzeit.model;
 
 import com.google.appengine.repackaged.com.google.common.base.Objects;
+import com.googlecode.objectify.annotation.Subclass;
 
+@Subclass
 public class SphericCoordinate extends AbstractCoordinate {
 
 	private double latitude;

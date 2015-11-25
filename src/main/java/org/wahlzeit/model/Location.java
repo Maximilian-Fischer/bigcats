@@ -1,6 +1,13 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.services.DataObject;
+import org.wahlzeit.services.ObjectManager;
+
+import com.google.appengine.api.datastore.Key;
 import com.googlecode.objectify.annotation.Container;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Parent;
 
 public class Location {
 

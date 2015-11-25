@@ -1,6 +1,16 @@
 package org.wahlzeit.model;
 
-public abstract class AbstractCoordinate implements Coordinate {
+import org.wahlzeit.services.DataObject;
+import org.wahlzeit.services.ObjectManager;
+
+import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Parent;
+
+@Entity
+public abstract class AbstractCoordinate extends DataObject implements
+		Coordinate {
 
 	/**
 	 * returns direct distance between two coordinate objects (interchangeably)
@@ -8,6 +18,12 @@ public abstract class AbstractCoordinate implements Coordinate {
 	 * @methodtype query
 	 * 
 	 */
+
+	@Id
+	Long idLong;
+	@Parent
+	Key parent = ObjectManager.applicationRootKey;
+
 	@Override
 	public double getDistance(Coordinate otherCoordinate) {
 		// preconditions
