@@ -24,6 +24,7 @@ import com.google.api.client.util.Charsets;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.common.io.CharStreams;
+
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -35,11 +36,13 @@ import org.wahlzeit.model.User;
 import org.wahlzeit.model.UserSession;
 import org.wahlzeit.services.LogBuilder;
 import org.wahlzeit.services.SessionManager;
+import org.wahlzeit.utils.Pattern;
 import org.wahlzeit.webparts.WebPart;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,22 +51,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
 /**
  * The main servlet class for handling incoming and outgoing requests.
  */
+@Pattern(name = "Null Object", participants = { "RealObject" })
 public class MainServlet extends AbstractServlet {
 
-	private static final Logger log = Logger.getLogger(MainServlet.class.getName());
+	private static final Logger log = Logger.getLogger(MainServlet.class
+			.getName());
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 42L; // any one does; class never serialized
+	private static final long serialVersionUID = 42L; // any one does; class
+														// never serialized
 
 	/**
 	 *
 	 */
-	public void myPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void myPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		long startTime = System.currentTimeMillis();
 
 		UserSession us = (UserSession) SessionManager.getThreadLocalSession();
@@ -75,13 +81,17 @@ public class MainServlet extends AbstractServlet {
 		} else {
 			link = PartUtil.NULL_FORM_NAME;
 		}
-		log.info(LogBuilder.createUserMessage().addParameter("posted to", link).toString());
+		log.info(LogBuilder.createUserMessage().addParameter("posted to", link)
+				.toString());
 
 		Map args = getRequestArgs(request, us);
-		log.info(LogBuilder.createSystemMessage().
-				addParameter("POST arguments", getRequestArgsAsString(us, args)).toString());
+		log.info(LogBuilder
+				.createSystemMessage()
+				.addParameter("POST arguments",
+						getRequestArgsAsString(us, args)).toString());
 
-		WebFormHandler formHandler = WebPartHandlerManager.getWebFormHandler(link);
+		WebFormHandler formHandler = WebPartHandlerManager
+				.getWebFormHandler(link);
 		link = PartUtil.DEFAULT_PAGE_NAME;
 		if (formHandler != null) {
 			link = formHandler.handlePost(us, args);
@@ -95,7 +105,8 @@ public class MainServlet extends AbstractServlet {
 	/**
 	 *
 	 */
-	public void myGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void myGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		long startTime = System.currentTimeMillis();
 
 		UserSession us = (UserSession) SessionManager.getThreadLocalSession();
@@ -107,15 +118,18 @@ public class MainServlet extends AbstractServlet {
 		}
 
 		link = link.substring(linkStart, linkEnd);
-		log.info(LogBuilder.createUserMessage().addParameter("requested URI", request.getRequestURI()).toString());
-
+		log.info(LogBuilder.createUserMessage()
+				.addParameter("requested URI", request.getRequestURI())
+				.toString());
 
 		WebPageHandler handler = WebPartHandlerManager.getWebPageHandler(link);
 		String newLink = PartUtil.DEFAULT_PAGE_NAME;
 		if (handler != null) {
 			Map args = getRequestArgs(request, us);
-			log.info(LogBuilder.createSystemMessage().
-					addParameter("GET arguments", getRequestArgsAsString(us, args)).toString());
+			log.info(LogBuilder
+					.createSystemMessage()
+					.addParameter("GET arguments",
+							getRequestArgsAsString(us, args)).toString());
 			newLink = handler.handleGet(us, link, args);
 		}
 
@@ -135,9 +149,11 @@ public class MainServlet extends AbstractServlet {
 	/**
 	 *
 	 */
-	protected Map getRequestArgs(HttpServletRequest request, UserSession us) throws IOException, ServletException {
+	protected Map getRequestArgs(HttpServletRequest request, UserSession us)
+			throws IOException, ServletException {
 		String contentType = request.getContentType();
-		if ((contentType != null) && contentType.startsWith("multipart/form-data")) {
+		if ((contentType != null)
+				&& contentType.startsWith("multipart/form-data")) {
 			return getMultiPartRequestArgs(request, us);
 		} else {
 			return request.getParameterMap();
@@ -145,11 +161,12 @@ public class MainServlet extends AbstractServlet {
 	}
 
 	/**
-	 * Searches for files in the request and puts them in the resulting map with the key "fileName". When a file is
-	 * found, you can access its path by searching for elements with the key "fileName".
+	 * Searches for files in the request and puts them in the resulting map with
+	 * the key "fileName". When a file is found, you can access its path by
+	 * searching for elements with the key "fileName".
 	 */
-	protected Map getMultiPartRequestArgs(HttpServletRequest request, UserSession us) throws IOException,
-			ServletException {
+	protected Map getMultiPartRequestArgs(HttpServletRequest request,
+			UserSession us) throws IOException, ServletException {
 		Map<String, String> result = new HashMap<String, String>();
 		result.putAll(request.getParameterMap());
 		try {
@@ -166,15 +183,18 @@ public class MainServlet extends AbstractServlet {
 					User user = (User) us.getClient();
 					user.setUploadedImage(image);
 					result.put("fileName", filename);
-					log.config(LogBuilder.createSystemMessage().addParameter("Uploaded image", filename).toString());
+					log.config(LogBuilder.createSystemMessage()
+							.addParameter("Uploaded image", filename)
+							.toString());
 				} else {
 					String key = fileItemStream.getFieldName();
 					InputStream is = fileItemStream.openStream();
-					String value = CharStreams.toString(new InputStreamReader(is, Charsets.UTF_8));
+					String value = CharStreams.toString(new InputStreamReader(
+							is, Charsets.UTF_8));
 					result.put(key, value);
-					log.config(LogBuilder.createSystemMessage().
-							addParameter("Key of uploaded parameter", key).
-							addParameter("value", value).toString());
+					log.config(LogBuilder.createSystemMessage()
+							.addParameter("Key of uploaded parameter", key)
+							.addParameter("value", value).toString());
 				}
 			}
 		} catch (Exception ex) {

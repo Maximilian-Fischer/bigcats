@@ -30,8 +30,10 @@ import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
+
 import org.wahlzeit.services.LogBuilder;
 import org.wahlzeit.services.SysConfig;
+import org.wahlzeit.utils.Pattern;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,14 +44,16 @@ import java.security.InvalidParameterException;
 import java.util.logging.Logger;
 
 /**
- * Adapter for the Google Cloud Storage.
- * Use {@link org.wahlzeit.model.persistence.GcsAdapter.Builder} to create an object.
+ * Adapter for the Google Cloud Storage. Use
+ * {@link org.wahlzeit.model.persistence.GcsAdapter.Builder} to create an
+ * object.
  * 
  * @review
  */
 public class GcsAdapter extends ImageStorage {
 
-	private static final Logger log = Logger.getLogger(GcsAdapter.class.getName());
+	private static final Logger log = Logger.getLogger(GcsAdapter.class
+			.getName());
 
 	private String bucketName;
 	private String photoFolder;
@@ -58,10 +62,13 @@ public class GcsAdapter extends ImageStorage {
 	private GcsService gcsService;
 
 	/**
-	 * Do not use directly, instead use {@link org.wahlzeit.model.persistence.GcsAdapter.Builder} to create an object.
+	 * Do not use directly, instead use
+	 * {@link org.wahlzeit.model.persistence.GcsAdapter.Builder} to create an
+	 * object.
 	 */
-	private GcsAdapter(String bucketName, String photoFolderName, String defaultImageMimeTypeName, int bufferLength,
-					   GcsService gcsService) {
+	private GcsAdapter(String bucketName, String photoFolderName,
+			String defaultImageMimeTypeName, int bufferLength,
+			GcsService gcsService) {
 		this.bucketName = bucketName;
 		this.photoFolder = photoFolderName;
 		this.defaultImageMimeTypeName = defaultImageMimeTypeName;
@@ -69,33 +76,38 @@ public class GcsAdapter extends ImageStorage {
 		this.gcsService = gcsService;
 	}
 
-
 	@Override
-	protected void doWriteImage(Serializable image, String photoIdAsString, int size)
-			throws IOException, InvalidParameterException {
+	protected void doWriteImage(Serializable image, String photoIdAsString,
+			int size) throws IOException, InvalidParameterException {
 
 		GcsFilename gcsFilename = getGcsFileName(photoIdAsString, size);
-		log.config(LogBuilder.createSystemMessage().addParameter("gcsFileName", gcsFilename).toString());
+		log.config(LogBuilder.createSystemMessage()
+				.addParameter("gcsFileName", gcsFilename).toString());
 
-		String fileType = URLConnection.guessContentTypeFromName(gcsFilename.getObjectName());
+		String fileType = URLConnection.guessContentTypeFromName(gcsFilename
+				.getObjectName());
 		GcsFileOptions.Builder fileOptionsBuilder = new GcsFileOptions.Builder();
 		if (fileType != null) {
 			fileOptionsBuilder.mimeType(fileType);
-			log.config(LogBuilder.createSystemMessage().addParameter("found file type", fileType).toString());
+			log.config(LogBuilder.createSystemMessage()
+					.addParameter("found file type", fileType).toString());
 		} else {
 			fileOptionsBuilder.mimeType(defaultImageMimeTypeName);
-			log.warning(LogBuilder.createSystemMessage().
-					addMessage("did not found file type, used default type").
-					addParameter("default type", defaultImageMimeTypeName).toString());
+			log.warning(LogBuilder.createSystemMessage()
+					.addMessage("did not found file type, used default type")
+					.addParameter("default type", defaultImageMimeTypeName)
+					.toString());
 		}
 
 		GcsFileOptions fileOptions = fileOptionsBuilder.build();
-		GcsOutputChannel outputChannel = gcsService.createOrReplace(gcsFilename, fileOptions);
+		GcsOutputChannel outputChannel = gcsService.createOrReplace(
+				gcsFilename, fileOptions);
 		if (image instanceof Image) {
 			Image imageObject = (Image) image;
 			outputChannel.write(ByteBuffer.wrap(imageObject.getImageData()));
 			outputChannel.close();
-			log.config(LogBuilder.createSystemMessage().addMessage("image successfully written").toString());
+			log.config(LogBuilder.createSystemMessage()
+					.addMessage("image successfully written").toString());
 		} else {
 			throw new InvalidParameterException("not an Image object!");
 		}
@@ -104,9 +116,11 @@ public class GcsAdapter extends ImageStorage {
 	@Override
 	protected Image doReadImage(String filename, int size) throws IOException {
 		GcsFilename gcsFilename = getGcsFileName(filename, size);
-		log.config(LogBuilder.createSystemMessage().addParameter("gcsFileName", gcsFilename).toString());
+		log.config(LogBuilder.createSystemMessage()
+				.addParameter("gcsFileName", gcsFilename).toString());
 
-		GcsInputChannel readChannel = gcsService.openReadChannel(gcsFilename, 0);
+		GcsInputChannel readChannel = gcsService
+				.openReadChannel(gcsFilename, 0);
 		ByteBuffer bb = ByteBuffer.allocate(bufferLength);
 		Image result = null;
 		try {
@@ -116,9 +130,11 @@ public class GcsAdapter extends ImageStorage {
 			// when image does not exist, IOException is thrown
 		}
 		if (result == null) {
-			log.warning(LogBuilder.createSystemMessage().addMessage("does not exist!").toString());
+			log.warning(LogBuilder.createSystemMessage()
+					.addMessage("does not exist!").toString());
 		} else {
-			log.config(LogBuilder.createSystemMessage().addMessage("image successfully read").toString());
+			log.config(LogBuilder.createSystemMessage()
+					.addMessage("image successfully read").toString());
 		}
 		return result;
 	}
@@ -129,18 +145,20 @@ public class GcsAdapter extends ImageStorage {
 		boolean result;
 		try {
 			// will be null if file does not exist
-			GcsFileMetadata gcsFileMetadata = gcsService.getMetadata(gcsFilename);
+			GcsFileMetadata gcsFileMetadata = gcsService
+					.getMetadata(gcsFilename);
 			result = gcsFileMetadata != null;
 		} catch (IOException e) {
 			result = false;
 		}
-		log.config(LogBuilder.createSystemMessage().addParameter("does image exist", result).toString());
+		log.config(LogBuilder.createSystemMessage()
+				.addParameter("does image exist", result).toString());
 		return result;
 	}
 
-
 	/**
-	 * Creates a <code>GcsFilename</code> for the photo in the specified size. The name structure is:
+	 * Creates a <code>GcsFilename</code> for the photo in the specified size.
+	 * The name structure is:
 	 *
 	 * BUCKET_NAME - ownerId/fileName/photoIdAsString
 	 *
@@ -151,7 +169,7 @@ public class GcsAdapter extends ImageStorage {
 		return new GcsFilename(bucketName, filePath);
 	}
 
-
+	@Pattern(name = "Builder", participants = { "Builder", "ConcreteBuilder" })
 	public static class Builder {
 		GcsService gcsService;
 		private String bucketName;
@@ -164,11 +182,12 @@ public class GcsAdapter extends ImageStorage {
 			photoFolderName = "photos";
 			defaultImageMimeTypeName = "image/jpeg";
 			/**
-			 * 1 MB Buffer, does not limit the size of the files. A valid compromise between unused allocation and
-			 * reallocation.
+			 * 1 MB Buffer, does not limit the size of the files. A valid
+			 * compromise between unused allocation and reallocation.
 			 */
 			bufferLength = 1024 * 1024;
-			gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
+			gcsService = GcsServiceFactory.createGcsService(RetryParams
+					.getDefaultInstance());
 		}
 
 		public void setBucketName(String bucketName) {
@@ -192,7 +211,8 @@ public class GcsAdapter extends ImageStorage {
 		}
 
 		public GcsAdapter build() {
-			return new GcsAdapter(bucketName, photoFolderName, defaultImageMimeTypeName, bufferLength, gcsService);
+			return new GcsAdapter(bucketName, photoFolderName,
+					defaultImageMimeTypeName, bufferLength, gcsService);
 		}
 	}
 }

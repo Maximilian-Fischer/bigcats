@@ -23,32 +23,38 @@ package org.wahlzeit.servlets;
 import org.wahlzeit.handlers.PartUtil;
 import org.wahlzeit.main.ServiceMain;
 import org.wahlzeit.services.LogBuilder;
+import org.wahlzeit.utils.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.logging.Logger;
-
 
 /**
  * The servlet for managing administrative system functions.
  */
+@Pattern(name = "Null Object", participants = { "RealObject" })
 public class AdminServlet extends AbstractServlet {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 42L; // any one does; class never serialized
+	private static final long serialVersionUID = 42L; // any one does; class
+														// never serialized
 
-	private static final Logger log = Logger.getLogger(AdminServlet.class.getName());
+	private static final Logger log = Logger.getLogger(AdminServlet.class
+			.getName());
 
 	/**
 	 *
 	 */
-	public void myGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void myGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String link = request.getRequestURI();
-		log.info(LogBuilder.createUserMessage().addParameter("requested URI", link).toString());
+		log.info(LogBuilder.createUserMessage()
+				.addParameter("requested URI", link).toString());
 		if (isLocalHost(request)) {
 			ServiceMain.getInstance().requestStop();
 			displayNullPage(request, response);

@@ -25,6 +25,7 @@ import org.wahlzeit.model.UserSession;
 import org.wahlzeit.services.LogBuilder;
 import org.wahlzeit.services.Session;
 import org.wahlzeit.services.SessionManager;
+import org.wahlzeit.utils.Pattern;
 import org.wahlzeit.utils.StringUtil;
 import org.wahlzeit.webparts.WebPart;
 
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -43,14 +45,18 @@ import java.util.logging.Logger;
 /**
  * A servlet class.
  */
+@Pattern(name = "Null Object", participants = { "AbstractObject" })
 public abstract class AbstractServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(AbstractServlet.class.getName());
-	private static final long serialVersionUID = 42L; // any does; class never serialized
+	private static final Logger log = Logger.getLogger(AbstractServlet.class
+			.getName());
+	private static final long serialVersionUID = 42L; // any does; class never
+														// serialized
 	/**
 	 *
 	 */
-	protected static int lastSessionId = 0; // system and agent are named differently
+	protected static int lastSessionId = 0; // system and agent are named
+											// differently
 
 	/**
 	 *
@@ -76,7 +82,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
@@ -95,7 +102,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
@@ -114,8 +122,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	protected void myPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
+	protected void myPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// do nothing
 	}
 
@@ -128,7 +136,8 @@ public abstract class AbstractServlet extends HttpServlet {
 		String sessionName = httpSession.getId();
 		String siteUrl = getSiteUrl(request); // @TODO Application
 
-		UserSession result = new UserSession(sessionName, siteUrl, httpSession, request.getLocale().getLanguage());
+		UserSession result = new UserSession(sessionName, siteUrl, httpSession,
+				request.getLocale().getLanguage());
 
 		return result;
 	}
@@ -136,8 +145,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	protected void displayNullPage(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
+	protected void displayNullPage(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
 		PrintWriter out = response.getWriter();
@@ -150,8 +159,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	protected void myGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
+	protected void myGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// do nothing
 	}
 
@@ -167,21 +176,26 @@ public abstract class AbstractServlet extends HttpServlet {
 	/**
 	 *
 	 */
-	protected void redirectRequest(HttpServletResponse response, String link) throws IOException {
+	protected void redirectRequest(HttpServletResponse response, String link)
+			throws IOException {
 		response.setContentType("text/html");
 		String newTarget = new String("/" + link + ".html");
-		log.config(LogBuilder.createSystemMessage().addParameter("Redirect to", newTarget).toString());
+		log.config(LogBuilder.createSystemMessage()
+				.addParameter("Redirect to", newTarget).toString());
 		response.sendRedirect(newTarget);
 	}
 
 	/**
 	 *
 	 */
-	protected void configureResponse(Session ctx, HttpServletResponse response, WebPart result) throws IOException {
+	protected void configureResponse(Session ctx, HttpServletResponse response,
+			WebPart result) throws IOException {
 		long processingTime = ctx.getProcessingTime();
-		result.addString("processingTime", StringUtil.asStringInSeconds((processingTime == 0) ? 1 : processingTime));
-		log.config(LogBuilder.createSystemMessage().
-				addParameter("proctime", String.valueOf(processingTime)).toString());
+		result.addString("processingTime", StringUtil
+				.asStringInSeconds((processingTime == 0) ? 1 : processingTime));
+		log.config(LogBuilder.createSystemMessage()
+				.addParameter("proctime", String.valueOf(processingTime))
+				.toString());
 
 		response.setContentType("text/html");
 
@@ -211,7 +225,7 @@ public abstract class AbstractServlet extends HttpServlet {
 	 */
 	protected String getRequestArgsAsString(UserSession us, Map args) {
 		StringBuffer result = new StringBuffer(96);
-		for (Iterator i = args.keySet().iterator(); i.hasNext(); ) {
+		for (Iterator i = args.keySet().iterator(); i.hasNext();) {
 			String key = i.next().toString();
 			String value = us.getAsString(args, key);
 			result.append(key + "=" + value);
