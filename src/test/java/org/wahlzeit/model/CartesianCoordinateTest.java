@@ -1,6 +1,8 @@
 package org.wahlzeit.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,27 +20,29 @@ public class CartesianCoordinateTest {
 
 	@Before
 	public void setUp() {
-		cartesianErlangen = new CartesianCoordinate(4762.5137725, 926.2823628,
-				4129.1772245);
-		cartesianLosAngeles = new CartesianCoordinate(-1688.1891415,
+		cartesianErlangen = CartesianCoordinate.getInstance(4762.5137725,
+				926.2823628, 4129.1772245);
+		cartesianLosAngeles = CartesianCoordinate.getInstance(-1688.1891415,
 				-3142.7037588, 5278.5482385);
 
-		sphericErlangen = new SphericCoordinate(49.599937, 11.006300);
-		sphericLosAngeles = new SphericCoordinate(34.052235, -118.243683);
+		sphericErlangen = SphericCoordinate.getInstance(49.599937, 11.006300,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
+		sphericLosAngeles = SphericCoordinate.getInstance(34.052235,
+				-118.243683, SphericCoordinate.EARTH_RADIUS_IN_KM);
 	}
 
-	@Test
-	public void testDefaultConstructor() {
-		CartesianCoordinate coordinate = new CartesianCoordinate();
-		assertEquals(0.0, coordinate.getCartesianX(), DELTA);
-		assertEquals(0.0, coordinate.getCartesianY(), DELTA);
-		assertEquals(0.0, coordinate.getCartesianZ(), DELTA);
-	}
+	// @Test
+	// public void testDefaultConstructor() {
+	// CartesianCoordinate coordinate = new CartesianCoordinate();
+	// assertEquals(0.0, coordinate.getCartesianX(), DELTA);
+	// assertEquals(0.0, coordinate.getCartesianY(), DELTA);
+	// assertEquals(0.0, coordinate.getCartesianZ(), DELTA);
+	// }
 
 	@Test
 	public void testXYZConstructor() {
-		CartesianCoordinate coordinate = new CartesianCoordinate(7000.0, 250.0,
-				3.7);
+		CartesianCoordinate coordinate = CartesianCoordinate.getInstance(
+				7000.0, 250.0, 3.7);
 		assertEquals(7000.0, coordinate.getCartesianX(), DELTA);
 		assertEquals(250.0, coordinate.getCartesianY(), DELTA);
 		assertEquals(3.7, coordinate.getCartesianZ(), DELTA);
@@ -98,4 +102,70 @@ public class CartesianCoordinateTest {
 		cartesianErlangen.getDistance(null);
 	}
 
+	@Test
+	public void testEqualAndSameCartesianCoordinate() {
+		CartesianCoordinate testSameCartesianErlangen = CartesianCoordinate
+				.getInstance(4762.5137725, 926.2823628, 4129.1772245);
+		assertTrue(testSameCartesianErlangen.isSame(cartesianErlangen));
+		assertFalse(testSameCartesianErlangen.isSame(sphericErlangen));
+		assertTrue(testSameCartesianErlangen.isEqual(sphericErlangen));
+	}
+
+	@Test
+	public void testCoordinateInstancesField() {
+		final int initialSizeOfCoordinateInstances = AbstractCoordinate.coordinateInstances
+				.size();
+		int coordinateInstancesSizeShouldValue = initialSizeOfCoordinateInstances;
+
+		SphericCoordinate.getInstance(49.599937, 11.006300,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
+		CartesianCoordinate
+				.getInstance(4762.5137725, 926.2823628, 4129.1772245);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+		SphericCoordinate.getInstance(20, 30, 40);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+		CartesianCoordinate.getInstance(50, 60, 70);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+		assertEquals(AbstractCoordinate.coordinateInstances.size(),
+				initialSizeOfCoordinateInstances + 2);
+	}
+
+	@Test
+	public void testCartesianCoordinateSetter() {
+		final int initialSizeOfCoordinateInstances = AbstractCoordinate.coordinateInstances
+				.size();
+		int coordinateInstancesSizeShouldValue = initialSizeOfCoordinateInstances;
+		CartesianCoordinate testCoordinate;
+
+		testCoordinate = cartesianErlangen.setX(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getCartesianX(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+		testCoordinate = cartesianErlangen.setY(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getCartesianY(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+		testCoordinate = cartesianErlangen.setZ(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getCartesianZ(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+		testCoordinate = cartesianErlangen.setX(10);
+		testCoordinate = cartesianErlangen.setY(10);
+		testCoordinate = cartesianErlangen.setZ(10);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+	}
 }

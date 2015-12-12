@@ -10,37 +10,37 @@ public class SphericCoordinate extends AbstractCoordinate {
 	private double longitude;
 	private double radius;
 
-	private static final int EARTH_RADIUS_IN_KM = 6371;
+	static final int EARTH_RADIUS_IN_KM = 6371;
 	static final double DEFAULT_LATITUDE = 0.0;
 	static final double DEFAULT_LONGITUDE = 0.0;
 
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate() {
+	private SphericCoordinate() {
 		this(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, EARTH_RADIUS_IN_KM);
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double latitude, double longitude) {
+	private SphericCoordinate(double latitude, double longitude) {
 		this(latitude, longitude, EARTH_RADIUS_IN_KM);
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double latitude, double longitude,
+	private SphericCoordinate(double latitude, double longitude,
 			double radiusInKm) {
 		// preconditions
 		assertIsValidLatitude(latitude);
 		assertIsValidLongitude(longitude);
 		assertIsValidRadius(radiusInKm);
 
-		setLatitude(latitude);
-		setLongitude(longitude);
-		setRadius(radiusInKm);
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.radius = radiusInKm;
 
 		// postconditions
 		assertClassInvariants();
@@ -56,15 +56,17 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setLatitude(double latitude) {
+	public SphericCoordinate setLatitude(double latitude) {
 
 		// precondition
 		assertIsValidLatitude(latitude);
 
-		this.latitude = latitude;
+		SphericCoordinate result = getInstance(latitude, this.longitude,
+				this.radius);
 
 		// postconditions
 		assertClassInvariants();
+		return result;
 	}
 
 	/**
@@ -77,14 +79,16 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setLongitude(double longitude) {
+	public SphericCoordinate setLongitude(double longitude) {
 		// precondition
 		assertIsValidLongitude(longitude);
 
-		this.longitude = longitude;
+		SphericCoordinate result = getInstance(this.latitude, longitude,
+				this.radius);
 
 		// postcondition
 		assertClassInvariants();
+		return result;
 	}
 
 	/**
@@ -97,15 +101,17 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setRadius(double radiusInKm) {
+	public SphericCoordinate setRadius(double radiusInKm) {
 
 		// precondition
 		assertIsValidRadius(radiusInKm);
 
-		this.radius = radiusInKm;
+		SphericCoordinate result = getInstance(this.latitude, this.longitude,
+				radiusInKm);
 
 		// postcondition
 		assertClassInvariants();
+		return result;
 
 	}
 
@@ -239,7 +245,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.latitude, this.longitude);
+		return Objects.hashCode(this.latitude, this.longitude, this.radius);
 	}
 
 	@Override
@@ -250,10 +256,39 @@ public class SphericCoordinate extends AbstractCoordinate {
 			return false;
 		SphericCoordinate otherCoordinate = (SphericCoordinate) obj;
 		if (latitude == otherCoordinate.getLatitude()
-				&& longitude == otherCoordinate.getLongitude())
+				&& longitude == otherCoordinate.getLongitude()
+				&& radius == otherCoordinate.getRadius())
 			return true;
 		else
 			return false;
+	}
+
+	/**
+	 * @methodtype helper
+	 */
+	public static SphericCoordinate getInstance(double latitude,
+			double longitude, double radius) {
+
+		// preconditions
+		assertParameterNotNull(latitude);
+		assertParameterNotNull(longitude);
+		assertParameterNotNull(radius);
+
+		String keyString = doCreateKeyString(latitude, longitude, radius,
+				SphericCoordinate.class.getCanonicalName());
+		Coordinate result = coordinateInstances.get(keyString);
+		if (result == null) {
+			synchronized (coordinateInstances) {
+				result = coordinateInstances.get(keyString);
+				if (result == null) {
+					result = new SphericCoordinate(latitude, longitude, radius);
+					coordinateInstances.put(keyString, result);
+				}
+			}
+		}
+		// postcondition
+		assertParameterNotNull(result);
+		return (SphericCoordinate) result;
 	}
 
 }

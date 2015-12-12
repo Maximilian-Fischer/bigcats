@@ -12,14 +12,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype constructor
 	 */
-	public CartesianCoordinate() {
+	private CartesianCoordinate() {
 		this(0.0, 0.0, 0.0);
 	}
 
 	/**
 	 * @methodtype constructor
 	 */
-	public CartesianCoordinate(double x, double y, double z) {
+	private CartesianCoordinate(double x, double y, double z) {
 		// preconditions
 		assertIsValidX(x);
 		assertIsValidY(y);
@@ -92,40 +92,46 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/**
 	 * @methodtype set
 	 */
-	public void setX(double x) {
+	public CartesianCoordinate setX(double x) {
 		// preconditions
 		assertIsValidX(x);
 
-		this.x = x;
+		CartesianCoordinate result = getInstance(x, this.y, this.z);
 
 		// postconditions
 		assertClassInvariants();
+
+		return result;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setY(double y) {
+	public CartesianCoordinate setY(double y) {
 		// preconditions
 		assertIsValidX(y);
 
-		this.y = y;
+		CartesianCoordinate result = getInstance(this.x, y, this.z);
 
 		// postconditions
 		assertClassInvariants();
+
+		return result;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setZ(double z) {
+	public CartesianCoordinate setZ(double z) {
 		// preconditions
 		assertIsValidX(z);
 
-		this.z = z;
+		CartesianCoordinate result = getInstance(this.x, this.y, z);
 
 		// postconditions
 		assertClassInvariants();
+
+		return result;
 	}
 
 	/**
@@ -163,5 +169,33 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		assertIsValidX(this.x);
 		assertIsValidY(this.y);
 		assertIsValidZ(this.z);
+	}
+
+	/**
+	 * @methodtype helper
+	 */
+	public static CartesianCoordinate getInstance(double xCartesian,
+			double yCartesian, double zCartesian) {
+		// preconditions
+		assertParameterNotNull(xCartesian);
+		assertParameterNotNull(yCartesian);
+		assertParameterNotNull(zCartesian);
+
+		String keyString = doCreateKeyString(xCartesian, yCartesian,
+				zCartesian, CartesianCoordinate.class.getCanonicalName());
+		Coordinate result = coordinateInstances.get(keyString);
+		if (result == null) {
+			synchronized (coordinateInstances) {
+				result = coordinateInstances.get(keyString);
+				if (result == null) {
+					result = new CartesianCoordinate(xCartesian, yCartesian,
+							zCartesian);
+					coordinateInstances.put(keyString, result);
+				}
+			}
+		}
+		// postcondition
+		assertParameterNotNull(result);
+		return (CartesianCoordinate) result;
 	}
 }

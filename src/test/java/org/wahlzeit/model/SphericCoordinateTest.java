@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,45 +15,46 @@ public class SphericCoordinateTest {
 	private CartesianCoordinate cartesianErlangen;
 	private CartesianCoordinate cartesianLosAngeles;
 
-	// private static final double
-	// distanceErlangenToLosAngelesInKmOnEarthSurface =
-	// 9454.686943807534;
-	// private static final double distanceOfDummyCoordinatesOnEarthSurface =
-	// 17258.39021528912;
 	private static final double distanceErlangenToLosAngelesInKm = 7712.928747957382;
 	private static final double distanceBetweenDummyCoordinatesInKm = 12333.75146622485;
 	private static final double DELTA = 0.000001;
 
 	@Before
 	public void setUp() {
-		sphericErlangen = new SphericCoordinate(49.599937, 11.006300);
-		sphericLosAngeles = new SphericCoordinate(34.052235, -118.243683);
-		firstShortestDistanceCoordinate = new SphericCoordinate(-80.0, 170.0);
-		secondShortestDistanceCoordinate = new SphericCoordinate(75.0, -175.0);
+		sphericErlangen = SphericCoordinate.getInstance(49.599937, 11.006300,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
+		sphericLosAngeles = SphericCoordinate.getInstance(34.052235,
+				-118.243683, SphericCoordinate.EARTH_RADIUS_IN_KM);
+		firstShortestDistanceCoordinate = SphericCoordinate.getInstance(-80.0,
+				170.0, SphericCoordinate.EARTH_RADIUS_IN_KM);
+		secondShortestDistanceCoordinate = SphericCoordinate.getInstance(75.0,
+				-175.0, SphericCoordinate.EARTH_RADIUS_IN_KM);
 
-		cartesianErlangen = new CartesianCoordinate(4762.5137725, 926.2823628,
-				4129.1772245);
-		cartesianLosAngeles = new CartesianCoordinate(-1688.1891415,
+		cartesianErlangen = CartesianCoordinate.getInstance(4762.5137725,
+				926.2823628, 4129.1772245);
+		cartesianLosAngeles = CartesianCoordinate.getInstance(-1688.1891415,
 				-3142.7037588, 5278.5482385);
 	}
 
-	@Test
-	public void testDefaultConstructor() {
-		SphericCoordinate coordinate = new SphericCoordinate();
-		assertEquals(0.0, coordinate.getLatitude(), DELTA);
-		assertEquals(0.0, coordinate.getLongitude(), DELTA);
-	}
+	// @Test
+	// public void testDefaultConstructor() {
+	// SphericCoordinate coordinate = new SphericCoordinate();
+	// assertEquals(0.0, coordinate.getLatitude(), DELTA);
+	// assertEquals(0.0, coordinate.getLongitude(), DELTA);
+	// }
 
 	@Test
 	public void testLatLonConstructor() {
-		SphericCoordinate coordinate = new SphericCoordinate(-32, 100);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(-32, 100,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
 		assertEquals(-32, coordinate.getLatitude(), DELTA);
 		assertEquals(100, coordinate.getLongitude(), DELTA);
 	}
 
 	@Test
 	public void testLatLonConstructorWithRadius() {
-		SphericCoordinate coordinate = new SphericCoordinate(-32, 100, 5000);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(-32, 100,
+				5000);
 		assertEquals(-32, coordinate.getLatitude(), DELTA);
 		assertEquals(100, coordinate.getLongitude(), DELTA);
 		assertEquals(5000, coordinate.getRadius(), DELTA);
@@ -61,27 +62,32 @@ public class SphericCoordinateTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testLatitudeOutOfHigherBounds() {
-		SphericCoordinate coordinate = new SphericCoordinate(90.1, 0);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(90.1, 0,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testLatitudeOutOfLowerBounds() {
-		SphericCoordinate coordinate = new SphericCoordinate(-90.1, 0);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(-90.1, 0,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testLongitudeOutOfHigherBounds() {
-		SphericCoordinate coordinate = new SphericCoordinate(45, 180.1);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(45, 180.1,
+				SphericCoordinate.EARTH_RADIUS_IN_KM);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testLongitudeOutOfLowerBounds() {
-		SphericCoordinate coordinate = new SphericCoordinate(45, -180.1);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(45,
+				-180.1, SphericCoordinate.EARTH_RADIUS_IN_KM);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testRadiusOutOfBounds() {
-		SphericCoordinate coordinate = new SphericCoordinate(45, 40, -20);
+		SphericCoordinate coordinate = SphericCoordinate.getInstance(45, 40,
+				-20);
 	}
 
 	@Test
@@ -184,4 +190,44 @@ public class SphericCoordinateTest {
 				.getDistance(null);
 	}
 
+	@Test
+	public void testEqualAndSameSphericCoordinate() {
+		SphericCoordinate testSameSphericErlangen = SphericCoordinate
+				.getInstance(49.599937, 11.006300,
+						SphericCoordinate.EARTH_RADIUS_IN_KM);
+		assertTrue(testSameSphericErlangen.isSame(sphericErlangen));
+		assertFalse(testSameSphericErlangen.isSame(cartesianErlangen));
+		assertTrue(testSameSphericErlangen.isEqual(cartesianErlangen));
+	}
+
+	@Test
+	public void testSphericCoordinateSetter() {
+		final int initialSizeOfCoordinateInstances = AbstractCoordinate.coordinateInstances
+				.size();
+		int coordinateInstancesSizeShouldValue = initialSizeOfCoordinateInstances;
+		SphericCoordinate testCoordinate;
+
+		testCoordinate = sphericErlangen.setLatitude(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getLatitude(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+		testCoordinate = sphericErlangen.setLongitude(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getLongitude(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+		testCoordinate = sphericErlangen.setRadius(10);
+		coordinateInstancesSizeShouldValue++;
+		assertEquals(testCoordinate.getRadius(), 10.0, DELTA);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+		testCoordinate = sphericErlangen.setLatitude(10);
+		testCoordinate = sphericErlangen.setLongitude(10);
+		testCoordinate = sphericErlangen.setRadius(10);
+		assertEquals(coordinateInstancesSizeShouldValue,
+				AbstractCoordinate.coordinateInstances.size());
+
+	}
 }

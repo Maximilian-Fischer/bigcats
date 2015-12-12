@@ -1,5 +1,7 @@
 package org.wahlzeit.model;
 
+import java.util.HashMap;
+
 import org.wahlzeit.services.DataObject;
 import org.wahlzeit.services.ObjectManager;
 
@@ -9,8 +11,9 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Parent;
 
 @Entity
-public abstract class AbstractCoordinate extends DataObject implements
-		Coordinate {
+public abstract class AbstractCoordinate implements Coordinate {
+
+	protected static final HashMap<String, Coordinate> coordinateInstances = new HashMap<String, Coordinate>();
 
 	/**
 	 * returns direct distance between two coordinate objects (interchangeably)
@@ -18,12 +21,6 @@ public abstract class AbstractCoordinate extends DataObject implements
 	 * @methodtype query
 	 * 
 	 */
-
-	@Id
-	Long idLong;
-	@Parent
-	Key parent = ObjectManager.applicationRootKey;
-
 	@Override
 	public double getDistance(Coordinate otherCoordinate) {
 		// preconditions
@@ -40,6 +37,18 @@ public abstract class AbstractCoordinate extends DataObject implements
 		assertClassInvariants();
 
 		return distance;
+	}
+
+	/**
+	 * @methodtype helper method
+	 * 
+	 */
+	protected static String doCreateKeyString(double paramOne, double paramTwo,
+			double paramThree, String className) {
+
+		String result = "" + paramOne + " " + paramTwo + " " + paramThree + " "
+				+ className;
+		return result;
 	}
 
 	/**
@@ -62,6 +71,21 @@ public abstract class AbstractCoordinate extends DataObject implements
 		assertClassInvariants();
 
 		return isEverythingEqual;
+	}
+
+	/**
+	 * @methodtype booleanQuery
+	 */
+	public boolean isSame(Coordinate otherCoordinate) {
+		// preconditions
+		assertNotNull(otherCoordinate);
+
+		boolean isSameCoordinateObject = (this == otherCoordinate);
+
+		// postconditions
+		assertClassInvariants();
+
+		return isSameCoordinateObject;
 	}
 
 	/**
@@ -91,6 +115,16 @@ public abstract class AbstractCoordinate extends DataObject implements
 	protected void assertClassInvariants() {
 		// AbstractCoordinate does not have a state --> no invariant checks
 		// needed
+	}
+
+	/**
+	 * @methodtype assertion
+	 * @methodproperty primitive
+	 */
+	protected static void assertParameterNotNull(Object other) {
+		if (other == null) {
+			throw new IllegalArgumentException("Parameter should not be null.");
+		}
 	}
 
 	/**
