@@ -5,7 +5,7 @@ import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 
 import org.wahlzeit.model.Administrator;
-import org.wahlzeit.model.BigCatsPhoto;
+import org.wahlzeit.model.BigCatPhoto;
 import org.wahlzeit.model.Client;
 import org.wahlzeit.model.Globals;
 import org.wahlzeit.model.Guest;
@@ -39,7 +39,7 @@ public class OfyService {
 		factory().register(Guest.class);
 		factory().register(PhotoCase.class);
 		factory().register(ImageWrapper.class);
-		factory().register(BigCatsPhoto.class);
+		factory().register(BigCatPhoto.class);
 	}
 
 	public static Objectify ofy() {

@@ -50,7 +50,7 @@ public abstract class PhotoFactory {
 	 * Public singleton access method. return BigCatsPhotoFactory instance
 	 */
 	public static synchronized PhotoFactory getInstance() {
-		return BigCatsPhotoFactory.getInstance();
+		return BigCatPhotoFactory.getInstance();
 	}
 
 	/**

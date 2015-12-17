@@ -1,61 +1,45 @@
 package org.wahlzeit.model;
 
-import com.googlecode.objectify.annotation.Subclass;
+public class BigCat {
 
-@Subclass
-public class BigCatsPhoto extends Photo {
-
-	private static final long serialVersionUID = 6761837684553577495L;
 	private static final int MAXIMUM_CAT_BODYHEIGHT_IN_CM = 400;
 	private static final int MAXIMUM_CAT_BODYWEIGHT_IN_KG = 300;
+	private static long ID;
 
-	private String species = "";
+	private long bigCatId;
+	private String name = "";
 	private int bodyheightInCm = 0;
 	private int bodyweightInKg = 0;
 
-	/**
-	 * @methodtype constructor
-	 */
-	public BigCatsPhoto() {
-		super();
-	}
+	private BigCatType bigCatType;
 
 	/**
 	 * @methodtype constructor
 	 */
-	public BigCatsPhoto(PhotoId id) {
-		super(id);
-	}
-
-	/**
-	 * @methodtype constructor
-	 */
-	public BigCatsPhoto(PhotoId id, String species) {
-		super(id);
-		this.species = species;
-	}
-
-	public BigCatsPhoto(PhotoId id, Location location) {
-		super(id, location);
-	}
-
-	public BigCatsPhoto(PhotoId id, Location location, String species) {
-		super(id, location);
-		this.species = species;
+	public BigCat(BigCatType bigCatType) {
+		this.bigCatType = bigCatType;
+		bigCatId = ID++;
 	}
 
 	/**
 	 * @methodtype get
 	 */
-	public String getSpecies() {
-		return species;
+	public long getId() {
+		return bigCatId;
+	}
+
+	/**
+	 * @methodtype get
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setSpecies(String species) {
-		this.species = species;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -107,4 +91,33 @@ public class BigCatsPhoto extends Photo {
 			throw new IllegalArgumentException(
 					"There is no big cat with this bodyweight");
 	}
+
+	/**
+	 * @methodtype get
+	 */
+	public BigCatType getType() {
+		return bigCatType;
+	}
+
+	/**
+	 * @methodtype get
+	 */
+	public String getSpecies() {
+		return bigCatType.getSpecies();
+	}
+
+	/**
+	 * @methodtype get
+	 */
+	public String getHaunt() {
+		return bigCatType.getHaunt();
+	}
+
+	/**
+	 * @methodtype get
+	 */
+	public long getPopulation() {
+		return bigCatType.getPopulation();
+	}
+
 }

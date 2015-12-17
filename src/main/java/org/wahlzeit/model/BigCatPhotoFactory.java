@@ -2,7 +2,7 @@ package org.wahlzeit.model;
 
 import org.wahlzeit.services.LogBuilder;
 
-public class BigCatsPhotoFactory extends PhotoFactory {
+public class BigCatPhotoFactory extends PhotoFactory {
 
 	/**
 	 * Hidden singleton instance; needs to be initialized from the outside.
@@ -12,7 +12,7 @@ public class BigCatsPhotoFactory extends PhotoFactory {
 	/**
 	 * @methodtype constructor
 	 */
-	private BigCatsPhotoFactory() {
+	private BigCatPhotoFactory() {
 		// nothing to do here ;)
 	}
 
@@ -25,7 +25,7 @@ public class BigCatsPhotoFactory extends PhotoFactory {
 		if (instance == null) {
 			log.config(LogBuilder.createSystemMessage()
 					.addAction("setting generic PhotoFactory").toString());
-			setInstance(new BigCatsPhotoFactory());
+			setInstance(new BigCatPhotoFactory());
 		}
 		return instance;
 	}
@@ -49,7 +49,7 @@ public class BigCatsPhotoFactory extends PhotoFactory {
 	 */
 	@Override
 	public Photo createPhoto() {
-		return new BigCatsPhoto();
+		return new BigCatPhoto();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class BigCatsPhotoFactory extends PhotoFactory {
 	 */
 	@Override
 	public Photo createPhoto(PhotoId id) {
-		return new BigCatsPhoto(id);
+		return new BigCatPhoto(id);
 	}
 
 }
