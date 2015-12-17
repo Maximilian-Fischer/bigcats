@@ -92,13 +92,6 @@ public class BigCatManager {
 	}
 
 	/**
-	 * @methodtype boolean query
-	 */
-	public boolean isBigCatTypeCreated() {
-		return bigCatTypes.size() > 0;
-	}
-
-	/**
 	 * @methodtype helper / factory
 	 */
 	private void doCreateBasicTypes() {
