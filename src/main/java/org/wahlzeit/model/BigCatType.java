@@ -1,7 +1,13 @@
 package org.wahlzeit.model;
 
-public class BigCatType {
+import org.wahlzeit.services.DataObject;
 
+public class BigCatType extends DataObject {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8773241025674633868L;
 	private String species = "";
 	private String haunt = "";
 	private long population;

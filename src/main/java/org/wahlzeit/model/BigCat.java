@@ -1,7 +1,15 @@
 package org.wahlzeit.model;
 
-public class BigCat {
+import org.wahlzeit.services.DataObject;
 
+import com.googlecode.objectify.annotation.Container;
+
+public class BigCat extends DataObject {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5666489807673383861L;
 	private static final int MAXIMUM_CAT_BODYHEIGHT_IN_CM = 400;
 	private static final int MAXIMUM_CAT_BODYWEIGHT_IN_KG = 300;
 	private static long ID;
@@ -11,6 +19,7 @@ public class BigCat {
 	private int bodyheightInCm = 0;
 	private int bodyweightInKg = 0;
 
+	@Container
 	private BigCatType bigCatType;
 
 	/**

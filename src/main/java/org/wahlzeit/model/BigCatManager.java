@@ -1,7 +1,6 @@
 package org.wahlzeit.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -33,7 +32,7 @@ public class BigCatManager {
 	/**
 	 * @methodtype factory
 	 */
-	public BigCat createBigCat(String species) {
+	public synchronized BigCat createBigCat(String species) {
 		assertIsBigCatTypeAvailable(species);
 		BigCatType bigCatType = doGetBigCatType(species);
 		BigCat result = bigCatType.createInstance();
@@ -44,13 +43,12 @@ public class BigCatManager {
 	/**
 	 * @methodtype factory
 	 */
-	public BigCatType createBigCatType(String species, String haunt,
-			long population) {
+	public synchronized BigCatType createBigCatType(String species,
+			String haunt, long population) {
 		assertIsBigCatTypeNotYetCreated(species);
 		BigCatType result = new BigCatType(species, haunt, population);
 		bigCatTypes.put(species, result);
 		return result;
-
 	}
 
 	/**
@@ -61,7 +59,6 @@ public class BigCatManager {
 		assertIsBigCatTypeAvailable(species);
 		bigCatTypes.remove(species);
 		return createBigCatType(species, haunt, population);
-
 	}
 
 	/**

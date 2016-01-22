@@ -2,6 +2,7 @@ package org.wahlzeit.model;
 
 import java.util.Date;
 
+import com.googlecode.objectify.annotation.Container;
 import com.googlecode.objectify.annotation.Subclass;
 
 @Subclass
@@ -9,7 +10,9 @@ public class BigCatPhoto extends Photo {
 
 	private static final long serialVersionUID = 6761837684553577495L;
 
+	@Container
 	private Date timeTaken;
+	@Container
 	private BigCat bigCat;
 
 	/**
